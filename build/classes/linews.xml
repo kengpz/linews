@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+	<context:property-placeholder location="linews.properties" />
+	<!-- <tx:annotation-driven transaction-manager="dataSourceTransactionManager" /> -->
+
+	<!-- Cipher -->
+	<bean id="aesCipherService" class="com.herokuapp.linews.service.impl.AesCipherServiceImpl" />
+
+	<!-- Properties -->	
+	<!-- <bean id="properties" class="com.herokuapp.muaytoday.config.Properties">
+		<property name="aesCipherService" ref="aesCipherService" />
+		<property name="driverClassName" value="${postgres.datasource.driverClassName}" />
+		<property name="url" value="${postgres.datasource.url}" />
+		<property name="username" value="${postgres.datasource.username}" />
+		<property name="password" value="${postgres.datasource.password}" />
+	</bean> -->
+
+	<!-- <util:map id="mauytodayUrl" map-class="java.util.HashMap">
+		<entry key="1" value="${prd.url}" />
+		<entry key="2" value="${stg.url}" />
+	</util:map> -->
+
+	<bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
+	<bean id="httpHeaders" class="org.springframework.http.HttpHeaders" scope="prototype" />
+
+	<!-- DataSource -->
+	<!-- <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="#{properties.getDriverClassName()}" />
+		<property name="url" value="#{properties.getUrl()}" />
+		<property name="username" value="#{properties.getUsername()}" />
+		<property name="password" value="#{properties.getPassword()}" />
+	</bean> -->
+
+	<bean id="restTemplateService" class="com.herokuapp.linews.service.impl.RestTemplateServiceImpl">
+		<property name="objectMapper" ref="objectMapper" />
+		<property name="restTemplate" ref="restTemplate" />
+		<property name="httpHeaders" ref="httpHeaders" />
+		<property name="httpHtmlHeaders" ref="httpHeaders" />
+		<property name="url" value="${prd.url}" />
+	</bean>
+
+	<!-- <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean> -->
+
+	<!-- DAO -->
+	<!-- <bean id="matchDao" class="com.herokuapp.muaytoday.dao.impl.MatchDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean> -->
+
+	<!-- Service -->
+	<!-- <bean id="matchService" class="com.herokuapp.muaytoday.service.impl.MatchServiceImpl">
+		<property name="aesCipherService" ref="aesCipherService" />
+		<property name="matchDao" ref="matchDao" />
+		<property name="mauytodayUrl" ref="mauytodayUrl" />
+	</bean> -->
+</beans>
