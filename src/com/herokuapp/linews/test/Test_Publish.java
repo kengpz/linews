@@ -64,9 +64,7 @@ public class Test_Publish {
 	public static String getJsonRequest() throws JsonParseException, JsonMappingException, IOException {
 		Map messages = new HashMap();
 		String to = "U1095b0eb190532df137e4d45b70cd383";
-
-		String json = "{    \"to\":\"" + to + "\",    \"messages\":[        {            \"type\":\"text\",            \"text\":\"Hello, user\"        },        {            \"type\":\"text\",            \"text\":\"May I help you?\"        }    ]}";
-		messages = new ObjectMapper().readValue(json, Map.class);
+		String json = "{    \"to\":\"" + to + "\",    \"messages\":[        {            \"type\":\"text\",            \"text\":\"Hello, usersssssssssssssssssssssssWx  EEE\"        },        {            \"type\":\"text\",            \"text\":\"May I help you?\"        }    ]}";
 
 		return json;
 	}

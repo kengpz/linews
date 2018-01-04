@@ -3,6 +3,7 @@ package com.herokuapp.linews.service.impl;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+import org.apache.commons.codec.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -11,7 +12,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.herokuapp.linews.service.RestTemplateService;
@@ -83,13 +87,18 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 	public String getForResponse(String action, Map response) {
 		try {
 			String json = objectMapper.writeValueAsString(response);
-			HttpEntity<String> requestEntity = new HttpEntity<String>(json, httpHeaders);
-			ResponseEntity<String> responseEntity = restTemplate.getForEntity("http://muaythaijklsx.herokuapp.com/sender.php?to=U1095b0eb190532df137e4d45b70cd383&sat=TRmL8E/pYjsx3FjlXSNsBfiSS9opDNiDZlkWdhMhzVivXYfx3lJq19vtvWDe6MF+pP21hy4AR7tqR71Atluh3MGViDX/B7X6H4aZtcubapd1ESnu8f8g38jy3x75INjre4cGjaXf6bxncLTqfru4hAdB04t89/1O/w1cDnyilFU=&msg="+json, String.class);
-			//ResponseEntity<String> responseEntity = restTemplate.exchange("http://muaythaijklsx.herokuapp.com/sender.php", HttpMethod.POST, requestEntity, String.class);
+			MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<String, String>();
+			multiValueMap.add("msg", json);
+			multiValueMap.add("to", "C32eb44a444128e6b10c54365d3bc521c");
+			multiValueMap.add("cat", "TRmL8E/pYjsx3FjlXSNsBfiSS9opDNiDZlkWdhMhzVivXYfx3lJq19vtvWDe6MF+pP21hy4AR7tqR71Atluh3MGViDX/B7X6H4aZtcubapd1ESnu8f8g38jy3x75INjre4cGjaXf6bxncLTqfru4hAdB04t89/1O/w1cDnyilFU=");
+			ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://muaythaijklsx.herokuapp.com/sender.php", multiValueMap, String.class);
 
 			return responseEntity.getBody().toString();
 		} catch (Exception exception) {
-			return "404";
+			RestTemplate restTemplate = new RestTemplate();
+			restTemplate.getForEntity("http://muaythaijklsx.herokuapp.com/sender.php?to=U1095b0eb190532df137e4d45b70cd383&cat=TRmL8E/pYjsx3FjlXSNsBfiSS9opDNiDZlkWdhMhzVivXYfx3lJq19vtvWDe6MF+pP21hy4AR7tqR71Atluh3MGViDX/B7X6H4aZtcubapd1ESnu8f8g38jy3x75INjre4cGjaXf6bxncLTqfru4hAdB04t89/1O/w1cDnyilFU=&msg=" + response.toString(), String.class);
+
+			return exception.getMessage();
 		}
 	}
 }
