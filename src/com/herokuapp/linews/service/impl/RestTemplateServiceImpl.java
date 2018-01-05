@@ -1,9 +1,11 @@
 package com.herokuapp.linews.service.impl;
 
 import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
-import org.apache.commons.codec.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -15,7 +17,6 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.herokuapp.linews.service.RestTemplateService;
@@ -41,6 +42,7 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 		MediaType mediaType = new MediaType("application", "json", Charset.forName("UTF-8"));
 		this.httpHeaders = httpHeaders;
 		this.httpHeaders.setContentType(mediaType);
+		this.httpHeaders.set("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36");
 	}
 
 	public void setHttpHtmlHeaders(HttpHeaders httpHtmlHeaders) {
@@ -98,6 +100,24 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 			restTemplate.getForEntity("http://muaythaijklsx.herokuapp.com/sender.php?to=U1095b0eb190532df137e4d45b70cd383&cat=TRmL8E/pYjsx3FjlXSNsBfiSS9opDNiDZlkWdhMhzVivXYfx3lJq19vtvWDe6MF+pP21hy4AR7tqR71Atluh3MGViDX/B7X6H4aZtcubapd1ESnu8f8g38jy3x75INjre4cGjaXf6bxncLTqfru4hAdB04t89/1O/w1cDnyilFU=&msg=" + response.toString(), String.class);
 
 			return exception.getMessage();
+		}
+	}
+
+	public Map getForPrice(String agent) {
+		try {
+			HttpEntity<String> requestEntity = new HttpEntity<String>("", httpHeaders);
+			ResponseEntity<String> responseEntity = restTemplate.exchange("https://bx.in.th/api/", HttpMethod.GET, requestEntity, String.class);
+			Map response = objectMapper.readValue(responseEntity.getBody(), Map.class);
+
+			Date date = new Date(responseEntity.getHeaders().getDate());
+			DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+			String dateFormatted = formatter.format(date);
+			response.put("time", dateFormatted);
+
+			return response;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 }

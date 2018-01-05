@@ -2,6 +2,7 @@
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Enumeration"%>
+<%@page import="com.herokuapp.linews.service.CryptoCurrencyService"%>
 <%@page import="com.herokuapp.linews.service.RestTemplateService"%>
 <%@page import="com.herokuapp.linews.factory.ApplicationContextFactory"%>
 <%
@@ -14,7 +15,13 @@
 	}
 
 	String result = "200";
-	if(params.isEmpty() == false) {
+	if(String.valueOf(params.get("action")).equalsIgnoreCase("getprice")) {
+		CryptoCurrencyService cryptoCurrencyService = (CryptoCurrencyService) ApplicationContextFactory.getInstance().getBean("cryptoCurrencyService");
+		String pairingId = String.valueOf(params.get("msg"));
+		String msg = cryptoCurrencyService.getPairing(pairingId);
+		params.clear();
+		params = new HashMap();
+		params.put("msg", msg);
 		result = restTemplateService.getForResponse("", params);
 	}
 %><%out.clear();%>

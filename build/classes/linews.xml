@@ -41,6 +41,10 @@
 		<property name="password" value="#{properties.getPassword()}" />
 	</bean> -->
 
+	<bean id="cryptoCurrencyService" class="com.herokuapp.linews.service.impl.CryptoCurrencyServiceImpl">
+		<property name="restTemplateService" ref="restTemplateService" />
+	</bean>
+
 	<bean id="restTemplateService" class="com.herokuapp.linews.service.impl.RestTemplateServiceImpl">
 		<property name="objectMapper" ref="objectMapper" />
 		<property name="restTemplate" ref="restTemplate" />
