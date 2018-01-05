@@ -86,9 +86,8 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 
 	public String getForResponse(String action, Map response) {
 		try {
-			String json = objectMapper.writeValueAsString(response);
 			MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<String, String>();
-			multiValueMap.add("msg", json);
+			multiValueMap.add("msg", String.valueOf(response.get("msg")));
 			multiValueMap.add("to", "C32eb44a444128e6b10c54365d3bc521c");
 			multiValueMap.add("cat", "TRmL8E/pYjsx3FjlXSNsBfiSS9opDNiDZlkWdhMhzVivXYfx3lJq19vtvWDe6MF+pP21hy4AR7tqR71Atluh3MGViDX/B7X6H4aZtcubapd1ESnu8f8g38jy3x75INjre4cGjaXf6bxncLTqfru4hAdB04t89/1O/w1cDnyilFU=");
 			ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://muaythaijklsx.herokuapp.com/sender.php", multiValueMap, String.class);
