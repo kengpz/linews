@@ -44,4 +44,36 @@ public class CryptoCurrencyServiceImpl implements CryptoCurrencyService {
 
 		return msg.toString();
 	}
+
+	public String getPrice(String site) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String mappingMessage(String site, Map currencyMap) {
+		StringBuffer msg = new StringBuffer();
+
+		if(site.equalsIgnoreCase("bx")) {
+			String[] arrCurr = new String[] {"1","14","21","25","26","28"};
+			msg.append(currencyMap.get("time") +"\n");
+			msg.append("Exchange site : BX \n");
+			msg.append("____________________________\n\n");
+			for (int i = 0; i < arrCurr.length; i++) {
+				Map currencyObject = (Map) currencyMap.get(arrCurr[i]);
+				String currency = String.valueOf(currencyObject.get("secondary_currency")) + "/" + String.valueOf(currencyObject.get("primary_currency"));
+				String change = (Double.parseDouble(String.valueOf(currencyObject.get("change"))) >= 0) ? "+" + String.valueOf(currencyObject.get("change")) : String.valueOf(currencyObject.get("change"));
+				BigDecimal lastprice = new BigDecimal(String.valueOf(currencyObject.get("last_price")));
+
+				DecimalFormat df = new DecimalFormat("#,###.00");
+				if(arrCurr[i].equals("14")) df = new DecimalFormat("#0.00000000");
+
+				msg.append("Currency : " + currency + " \n");
+				msg.append("Last price : " + df.format(lastprice) + String.valueOf(currencyObject.get("primary_currency")) + "\n");
+				msg.append("Change : " + change + "% \n");
+				msg.append("____________________________\n\n");
+			}
+		}
+		
+		return msg.toString();
+	}
 }

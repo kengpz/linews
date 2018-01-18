@@ -50,6 +50,7 @@
 		<property name="restTemplate" ref="restTemplate" />
 		<property name="httpHeaders" ref="httpHeaders" />
 		<property name="httpHtmlHeaders" ref="httpHeaders" />
+		<property name="httpUrlencodedHeaders" ref="httpHeaders" />
 		<property name="url" value="${prd.url}" />
 	</bean>
 

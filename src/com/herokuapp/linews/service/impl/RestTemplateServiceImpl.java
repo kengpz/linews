@@ -27,6 +27,7 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 	private RestTemplate restTemplate;
 	private HttpHeaders httpHeaders;
 	private HttpHeaders httpHtmlHeaders;
+	private HttpHeaders httpUrlencodedHeaders;
 	private String url;
 	public static final long HOUR = 3600*1000;
 
@@ -44,6 +45,12 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 		this.httpHeaders = httpHeaders;
 		this.httpHeaders.setContentType(mediaType);
 		this.httpHeaders.set("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36");
+	}
+
+	public void setHttpUrlencodedHeaders(HttpHeaders httpUrlencodedHeaders) {
+		MediaType mediaType = new MediaType("application", "x-www-form-urlencoded", Charset.forName("UTF-8"));
+		this.httpUrlencodedHeaders = httpUrlencodedHeaders;
+		this.httpUrlencodedHeaders.setContentType(mediaType);
 	}
 
 	public void setHttpHtmlHeaders(HttpHeaders httpHtmlHeaders) {
@@ -119,6 +126,17 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	public int lineNotify(String token, String message) {
+		httpUrlencodedHeaders.set("Authorization", "Bearer " + token);
+		try {
+			HttpEntity<String> requestEntity = new HttpEntity<String>("", httpUrlencodedHeaders);
+			ResponseEntity<String> responseEntity = restTemplate.exchange("https://notify-api.line.me/api/notify", HttpMethod.POST, requestEntity, String.class);
+			return responseEntity.getStatusCode().value();
+		} catch(Exception e) {
+			return 555;
 		}
 	}
 }
