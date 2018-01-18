@@ -28,6 +28,7 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 	private HttpHeaders httpHeaders;
 	private HttpHeaders httpHtmlHeaders;
 	private String url;
+	public static final long HOUR = 3600*1000;
 
 	public void setObjectMapper(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
@@ -109,7 +110,7 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 			ResponseEntity<String> responseEntity = restTemplate.exchange("https://bx.in.th/api/", HttpMethod.GET, requestEntity, String.class);
 			Map response = objectMapper.readValue(responseEntity.getBody(), Map.class);
 
-			Date date = new Date(responseEntity.getHeaders().getDate());
+			Date date = new Date(responseEntity.getHeaders().getDate() + 7 * HOUR);
 			DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
 			String dateFormatted = formatter.format(date);
 			response.put("time", dateFormatted);
