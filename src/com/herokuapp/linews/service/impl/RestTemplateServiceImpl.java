@@ -1,9 +1,11 @@
 package com.herokuapp.linews.service.impl;
 
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -51,6 +53,7 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 		MediaType mediaType = new MediaType("application", "x-www-form-urlencoded", Charset.forName("UTF-8"));
 		this.httpUrlencodedHeaders = httpUrlencodedHeaders;
 		this.httpUrlencodedHeaders.setContentType(mediaType);
+		this.httpUrlencodedHeaders.set("Authorization", "Bearer gNmSCL33GrNZLsav6lP5cSSOaxbjQ8lf407WBobpMsD");
 	}
 
 	public void setHttpHtmlHeaders(HttpHeaders httpHtmlHeaders) {
@@ -112,6 +115,8 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 	}
 
 	public Map getForPrice(String agent) {
+		logger.info("getForPrice : agent = " + agent);
+
 		try {
 			HttpEntity<String> requestEntity = new HttpEntity<String>("", httpHeaders);
 			ResponseEntity<String> responseEntity = restTemplate.exchange("https://bx.in.th/api/", HttpMethod.GET, requestEntity, String.class);
@@ -122,6 +127,7 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 			String dateFormatted = formatter.format(date);
 			response.put("time", dateFormatted);
 
+			logger.info("Result = " + response);
 			return response;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -129,14 +135,33 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 		}
 	}
 
-	public int lineNotify(String token, String message) {
-		httpUrlencodedHeaders.set("Authorization", "Bearer " + token);
+	public int lineNotify(final String token, String message) {
+		logger.info("lineNotify : Token = " + token + ", message = " + message);
+
+		StringBuilder Authorization = new StringBuilder("Bearer <");
+		System.out.println("Authorization : " + Authorization.append(token).toString() + ">");
+
+		MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<String, String>();
+		multiValueMap.add("message", message);
+		Map params = new HashMap();
+		params.put("message", message);
+
 		try {
-			HttpEntity<String> requestEntity = new HttpEntity<String>("", httpUrlencodedHeaders);
-			ResponseEntity<String> responseEntity = restTemplate.exchange("https://notify-api.line.me/api/notify", HttpMethod.POST, requestEntity, String.class);
-			return responseEntity.getStatusCode().value();
+			String url = "https://notify-api.line.me/api/notify";
+			RestTemplate rest = new RestTemplate();
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+			headers.set("Authorization", Authorization.append(token).toString());
+			headers.set("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36");
+
+			HttpEntity<String> requestEntity = new HttpEntity<String>(objectMapper.writeValueAsString(params), headers);
+			ResponseEntity<String> responseEntity = rest.exchange("https://notify-api.line.me/api/notify", HttpMethod.POST,requestEntity, String.class);
+			logger.info("Result = " + responseEntity.getStatusCodeValue());
+
+			return responseEntity.getStatusCodeValue();
 		} catch(Exception e) {
-			return 555;
+			logger.error("Error : " + e.getMessage());
+			return 400;
 		}
 	}
 }

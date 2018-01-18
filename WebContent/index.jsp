@@ -10,14 +10,17 @@
 	String utk = (request.getParameter("utk") == null) ? "" : request.getParameter("utk");
 	String site = (request.getParameter("ag") == null) ? "" : request.getParameter("ag");
 
-	int result = 0;
+	String result = "0";
 	int length = 0;
-	if("".equals(utk) == false && "".equals(site) == false) {
+	if("".equals(utk) == false && "bx".equals(site)) {
 		RestTemplateService restTemplateService = (RestTemplateService) ApplicationContextFactory.getInstance().getBean("restTemplateService");
 		CryptoCurrencyService cryptoCurrencyService = (CryptoCurrencyService) ApplicationContextFactory.getInstance().getBean("cryptoCurrencyService");
 		Map currencyMap = restTemplateService.getForPrice(site);
 		String message = cryptoCurrencyService.mappingMessage(site, currencyMap);
-		result = restTemplateService.lineNotify(utk, message);
+		length = message.length();
+		Map params = new HashMap();
+		params.put("msg",message);
+		result = restTemplateService.getForResponse("", params);
 	}
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -28,6 +31,6 @@
 </head>
 <body>
 Result : <%=result %><br/>
-Length : <%=length %>
+Data length : <%=length %>
 </body>
 </html>
